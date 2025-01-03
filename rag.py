@@ -91,7 +91,7 @@ class PDFKnowledgeBaseQA:
         classification_prompt = f"""请分析以下问题，并将其分类为以下三种类型之一：
         1. expert_ranking: 询问专家排名、学者排名、发明人排名、专家推荐、专家列举等
         2. company_recommendation: 询问某个省份的企业推荐、公司推荐等
-        3. company_application_recommendation: 询问具有XXX应用的企业、哪些企业有XXX产品、哪些企业有XXX应用等
+        3. company_application_recommendation: 询问具有XXX应用的企业、哪些企业有XXX产品、哪些企业有XXX应用等，（询问中一定带有企业或公司这两个关键字）
         3. general_qa: 其他常规问题（包括询问专家具体信息，某领域有哪些专家，XXX专家有哪些专利)
         
         问题：{query}
