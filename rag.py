@@ -89,19 +89,27 @@ class PDFKnowledgeBaseQA:
     def _classify_question(self, query: str) -> str:
         """使用大模型对问题进行分类"""
         classification_prompt = f"""请分析以下问题，并将其分类为以下三种类型之一：
-        1. expert_ranking: 询问专家排名、学者排名、发明人排名、专家推荐、专家列举等
-        2. company_recommendation: 询问某个省份的企业推荐、公司推荐等
-        3. company_application_recommendation: 询问具有XXX应用的企业、哪些企业有XXX产品、哪些企业有XXX应用等，（询问中一定带有企业或公司这两个关键字）
-        3. general_qa: 其他常规问题（包括询问专家具体信息，某领域有哪些专家，XXX专家有哪些专利)
+        1. expert_ranking: 询问石墨烯专家、专家排名、学者排名、发明人排名、专家推荐、专家列举等
+        2. company_recommendation_province: 询问中包含具体的某个省份，企业推荐、公司推荐等，一定包含省份信息才能判定是这个类别
+        3. company_application_recommendation: 
+        询问具有XXX应用的企业、哪些企业有XXX产品、哪些企业有XXX应用等，
+        例如：石墨烯散热膜的企业、哪些企业有散热应用、环保应用的企业
+        当问到单独的产品或应用时不判定为此类，比如：石墨烯散热等单独概念而不涉及企业和公司，请不要判断到这一类
+        3. general_qa: 其他常规问题（
+        专家方面：
+        包括询问某位具体专家具体信息，某领域有哪些专家，XXX专家有哪些专利，
+        企业方面：
+        当问题只是询问石墨烯的相关企业，比如：企业推荐，石墨烯企业推荐，石墨烯的企业，石墨烯的龙头企业，石墨烯头部企业，石墨烯相关的企业等
+        )
         
         问题：{query}
         
-        请只返回分类结果（expert_ranking/company_recommendation/general_qa/company_application_recommendation），不要包含其他内容。"""
+        请只返回分类结果（expert_ranking/company_recommendation_province/general_qa/company_application_recommendation），不要包含其他内容。"""
         
         try:
             result = self.llm.invoke(classification_prompt)
             classification = result.content.strip().lower()
-            if classification in ['expert_ranking', 'company_recommendation', 'general_qa','company_application_recommendation']:
+            if classification in ['expert_ranking', 'company_recommendation_province', 'general_qa','company_application_recommendation']:
                 print('classification', classification)
                 return classification
             return 'general_qa'
@@ -188,7 +196,7 @@ class PDFKnowledgeBaseQA:
                     print(f"Error loading expert rankings: {e}")
                     return retrieval_result
                     
-            elif question_type == 'company_recommendation':
+            elif question_type == 'company_recommendation_province':
                 # 提取省份并获取企业排名数据
                 try:
                     # 使用大模型提取省份，使用已获取的省份列表
@@ -295,6 +303,10 @@ class PDFKnowledgeBaseQA:
 请根据以上信息给出准确、专业的回答。
 如果信息不足，请明确指出。
 如果用户问领域相关，有关键字吻合即可，不需要完全匹配。
+
+如果问题涉及到企业：
+1. 总是按企业的总分排序（从高到底）给出回复
+2. 默认给出6个分数在55到95之间的企业
 """
 
             # 使用 LLM 生成回答
