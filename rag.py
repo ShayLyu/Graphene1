@@ -267,10 +267,10 @@ class PDFKnowledgeBaseQA:
 
 1. {category}的企业排名数据:
 {json.dumps(category_data[:100], ensure_ascii=False)}
-
+ 
 
 用户问题: {query}
-
+ 
 请综合以上信息，给出准确的推荐。如果没有找到企业排名数据，请基于相关文档进行回复。
 请注意以下要求：
 1. 如果多于10条，请只输出前20条
