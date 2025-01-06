@@ -88,14 +88,14 @@ class PDFKnowledgeBaseQA:
     
     def _classify_question(self, query: str) -> str:
         """使用大模型对问题进行分类"""
-        classification_prompt = f"""请分析以下问题，并将其分类为以下三种类型之一：
+        classification_prompt = f"""请分析以下问题，并将其分类为以下四种类型之一：
         1. expert_ranking: 询问石墨烯专家、专家排名、学者排名、发明人排名、专家推荐、专家列举等
         2. company_recommendation_province: 询问中包含具体的某个省份，企业推荐、公司推荐等，一定包含省份信息才能判定是这个类别
         3. company_application_recommendation: 
         询问具有XXX应用的企业、哪些企业有XXX产品、哪些企业有XXX应用等，
         例如：石墨烯散热膜的企业、哪些企业有散热应用、环保应用的企业
         当问到单独的产品或应用时不判定为此类，比如：石墨烯散热等单独概念而不涉及企业和公司，请不要判断到这一类
-        3. general_qa: 其他常规问题（
+        4. general_qa: 其他常规问题（
         专家方面：
         包括询问某位具体专家具体信息，某领域有哪些专家，XXX专家有哪些专利，
         企业方面：
@@ -313,6 +313,7 @@ class PDFKnowledgeBaseQA:
 1. 请进一步介绍回复中出现的专有名词
 2. 从多个角度进行回复，让内容更加丰富
 3. 分条作答
+
 
 如果问题涉及到企业：
 1. 总是按企业的总分排序（从高到底）给出回复
