@@ -85,6 +85,7 @@ class KnowledgeBase:
         for filename in os.listdir(self.data_dir):
             if filename.lower().endswith('.pdf'):
                 pdf_files.append(os.path.join(self.data_dir, filename))
+        print(f"Found {len(pdf_files)} PDF files")
         return pdf_files
     
     def _get_jsonl_files(self) -> List[str]:

@@ -19,7 +19,8 @@ class QwenEmbeddings(Embeddings):
     ):
         self.client = OpenAI(
             api_key=api_key or os.environ.get('DASHSCOPE_API_KEY'),
-            base_url=base_url
+            base_url=base_url,
+
         )
         self.model = model
         self.dimensions = dimensions
@@ -89,15 +90,22 @@ class PDFKnowledgeBaseQA:
     def _classify_question(self, query: str) -> str:
         """使用大模型对问题进行分类"""
         classification_prompt = f"""请分析以下问题，并将其分类为以下四种类型之一：
-        1. expert_ranking: 询问石墨烯专家、专家排名、学者排名、发明人排名、专家推荐、专家列举等
+        1. expert_ranking: 询问石墨烯专家、专家排名、学者排名、发明人排名、专家推荐、专家列举等，（注意不包括介绍某位专家的具体信息）
         2. company_recommendation_province: 询问中包含具体的某个省份，企业推荐、公司推荐等，一定包含省份信息才能判定是这个类别
         3. company_application_recommendation: 
         询问具有XXX应用的企业、哪些企业有XXX产品、哪些企业有XXX应用等，
         例如：石墨烯散热膜的企业、哪些企业有散热应用、环保应用的企业
         当问到单独的产品或应用时不判定为此类，比如：石墨烯散热等单独概念而不涉及企业和公司，请不要判断到这一类
         4. general_qa: 其他常规问题（
+        石墨烯散热方面：
+        包括询问石墨烯散热方向的各种问题：石墨烯散热的市场、石墨烯散热的应用机会分析、石墨烯散热领域的发展策略等
+        
+        统计相关的知识方面：
+        包括企业或产业的数量、成立时间分布、地理分布、材料生产、材料应用、装置及检测三大环节相关的统计、专利方面的统计等
+        
         专家方面：
         包括询问某位具体专家具体信息，某领域有哪些专家，XXX专家有哪些专利，
+        
         企业方面：
         当问题只是询问石墨烯的相关企业，比如：企业推荐，石墨烯企业推荐，石墨烯的企业，石墨烯的龙头企业，石墨烯头部企业，石墨烯相关的企业等
         石墨烯一般知识方面：
@@ -309,6 +317,13 @@ class PDFKnowledgeBaseQA:
 如果信息不足，请明确指出。
 如果用户问领域相关，有关键字吻合即可，不需要完全匹配。
 
+当涉及到石墨烯的散热领域知识
+1. 请从多个角度进行回复，让内容更加丰富详细
+2. 分条作答
+
+当问到一些数据统计
+1. 请参考相关信息回复
+
 当涉及的石墨烯的一般问答知识，例如：石墨烯是什么，石墨烯有毒吗等
 1. 请进一步介绍回复中出现的专有名词
 2. 从多个角度进行回复，让内容更加丰富
@@ -382,7 +397,8 @@ def main():
         st.session_state.qa_system = PDFKnowledgeBaseQA(
             knowledge_base_path,
             model='qwen-plus',
-            base_url='https://dashscope.aliyuncs.com/compatible-mode/v1'
+            base_url='https://dashscope.aliyuncs.com/compatible-mode/v1',
+            temperature=1.9
         )
 
     st.markdown("### 💡 知识问答")
@@ -411,7 +427,7 @@ def main():
         if 'sources' in result and result['sources']:
             st.markdown("<div class='source-box'>", unsafe_allow_html=True)
             st.markdown("### 📄 相关文档片段")
-            
+
             for i, source in enumerate(result['sources'], 1):
                 with st.expander(f"文档片段 {i}"):
                     st.markdown("**内容预览:**")
