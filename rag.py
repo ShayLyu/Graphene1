@@ -90,7 +90,7 @@ class PDFKnowledgeBaseQA:
     def _classify_question(self, query: str) -> str:
         """使用大模型对问题进行分类"""
         classification_prompt = f"""请分析以下问题，并将其分类为以下四种类型之一：
-        1. expert_ranking: 询问石墨烯专家、专家排名、学者排名、发明人排名、专家推荐、专家列举等，（注意不包括介绍某位专家的具体信息）
+        1. expert_ranking: 询问石墨烯专家、专家排名、学者排名、发明人排名、专家推荐、专家列举等，（注意不包括介绍某位专家的具体信息、直接询问专家的姓名时也不被判定为此类）
         2. company_recommendation_province: 询问中包含具体的某个省份，企业推荐、公司推荐等，一定包含省份信息才能判定是这个类别
         3. company_application_recommendation: 
         询问具有XXX应用的企业、哪些企业有XXX产品、哪些企业有XXX应用等，
