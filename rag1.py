@@ -155,6 +155,7 @@ def main():
                 st.markdown(f"**用户**: {message}")
             else:
                 st.markdown(f"**助手**: {message}")
+                st.divider()
 
 if __name__ == "__main__":
     main()
