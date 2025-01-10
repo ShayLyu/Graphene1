@@ -157,5 +157,7 @@ def main():
                 st.markdown(f"**助手**: {message}")
                 st.divider()
 
+    st.markdown("💡 石墨烯知识助手：您的石墨烯研究专家")
+
 if __name__ == "__main__":
     main()
