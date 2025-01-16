@@ -448,6 +448,7 @@ class PDFKnowledgeBaseQA:
                     additional_info += "没有找到相关的网络搜索结果。"
 
                 enhanced_query = f"""基于以下信息回答问题:
+                
 {additional_info}
 
 用户问题: {query}
