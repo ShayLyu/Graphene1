@@ -86,7 +86,8 @@ class PDFKnowledgeBaseQA:
             model=model,
             temperature=temperature,
             openai_api_base=base_url,
-            openai_api_key=os.environ.get('DASHSCOPE_API_KEY')
+            openai_api_key=os.environ.get('DASHSCOPE_API_KEY'),
+            extra_body={"enable_search": True}
         )
     
     def _classify_question(self, query: str) -> str:
